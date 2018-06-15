@@ -4,7 +4,6 @@ import MessagesStore from '../../stores/messages'
 import ReplyBox from '../../components/messages/replyBox'
 import UserStore from '../../stores/user'
 import Utils from '../../utils'
-import MessagesAction from '../../actions/messages'
 
 class MessagesBox extends React.Component {
 
@@ -13,10 +12,10 @@ class MessagesBox extends React.Component {
     this.state = this.initialState
   }
   get initialState() {
-    //return MessagesStore.getChatByUserID(MessagesStore.getOpenChatUserID())
+    // return MessagesStore.getChatByUserID(MessagesStore.getOpenChatUserID())
     return this.getStateFromStore()
   }
-  getStateFromStore(){
+  getStateFromStore() {
     return MessagesStore.getChatByUserID(MessagesStore.getOpenChatUserID())
   }
   componentWillMount() {
