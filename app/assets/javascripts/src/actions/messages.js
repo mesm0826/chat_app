@@ -3,13 +3,13 @@ import Dispatcher from '../dispatcher'
 export default {
   changeOpenChat(newUserID) {
     Dispatcher.handleViewAction({
-      type: 'updateOpenChatID',
+      type: 'UPDATE_OPEN_CHAT_ID',
       userID: newUserID,
     })
   },
   sendMessage(userID, message) {
     Dispatcher.handleViewAction({
-      type: 'sendMessage',
+      type: 'SEND_MESSAGE',
       userID: userID,
       message: message,
       timestamp: +new Date(),
