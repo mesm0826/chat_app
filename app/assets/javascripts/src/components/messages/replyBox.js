@@ -8,22 +8,24 @@ class ReplyBox extends React.Component {
     super(props)
     this.state = this.initialState
   }
-
+  // 初期状態はブランク
   get initialState() {
     return {
       value: '',
     }
   }
-
+  // EnterKey押下
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      MessagesAction.sendMessage(MessagesStore.getOpenChatUserID(), this.state.value)
+      // MessagesAction.sendMessage(MessagesStore.getOpenChatUserID(), this.state.value)
+
+      MessagesAction.saveMessage(MessagesStore.getOpenChatUserID(), this.state.value)
       this.setState({
         value: '',
       })
     }
   }
-
+  // 状態を更新する
   updateValue(e) {
     this.setState({
       value: e.target.value,
