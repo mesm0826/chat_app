@@ -4,12 +4,6 @@ import {ActionTypes, APIEndpoints, CSRFToken} from '../constants/app'
 
 export default {
 
-  changeOpenChat(newUserID) {
-    Dispatcher.handleViewAction({
-      type: ActionTypes.UPDATE_OPEN_CHAT_ID,
-      userID: newUserID,
-    })
-  },
   // sendMessage(userID, message) {
   //   Dispatcher.handleViewAction({
   //     type: ActionTypes.SEND_MESSAGE,
@@ -20,10 +14,13 @@ export default {
   // },
   getMessages() {
     return new Promise((resolve, reject) => {
+      console.log('promiseMessages')
       request
       .get('/api/messages')
       .end((error, res) => {
         if (!error && res.status === 200) {
+          console.log('res.text')
+          console.log(res.text)
           const json = JSON.parse(res.text)
           Dispatcher.handleServerAction({
             type: ActionTypes.GET_MESSAGES,
@@ -36,19 +33,21 @@ export default {
       })
     })
   },
-  saveMessage(userID, message) {
+  saveMessage(message, user_id_to) {
     return new Promise((resolve, reject) => {
       request
-      .post(APIEndpoints.MESSAGES)
+      .post(`${APIEndpoints.MESSAGES}`)
       .set('X-CSRF-Token', CSRFToken())
       .send({ message: message,
-              user_id_from: userID,
+              user_id_to: user_id_to,
       })
       .end((error, res) => {
         if (!error && res.status === 200) {
+          console.log('res.text')
+          console.log(res.text)
           const json = JSON.parse(res.text)
           Dispatcher.handleServerAction({
-            tupe: ActionTypes.SAVE_MESSAGE,
+            type: ActionTypes.SAVE_MESSAGE,
             json,
           })
         } else {

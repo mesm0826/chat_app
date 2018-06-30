@@ -1,58 +1,67 @@
 import React from 'react'
 import classNames from 'classnames'
-import Utils from '../../utils'
+// import Utils from '../../utils'
 import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
-import MessagesAction from '../../actions/messages'
+// import MessagesAction from '../../actions/messages'
+import UsersAction from '../../actions/users'
 import _ from 'lodash'
 
 class UserList extends React.Component {
 
   constructor(props) {
     super(props)
+    console.log('UserList.js:props')
+    console.log(props)
     this.state = this.initialState
   }
 
   get initialState() {
-    MessagesAction.getMessages()
+    console.log('userList.js:initialState()')
+    UsersAction.getUsers()
     return this.getStateFromStore()
   }
 
   getStateFromStore() {
     // const allMessages = MessagesStore.getAllChats()
     const allMessages = MessagesStore.getMessages()
-    console.log(allMessages)
-    // MessagesAction.getMessages()
+    const messageList = allMessages || []
+    console.log('userList.js:messageList')
+    console.log(messageList)
 
-    const messageList = []
-    _.each(allMessages, (message) => {
-      // const messagesLength = message.messages.length
-      messageList.push({
-        lastMessage: message.content,
-        lastAccess: message.updated_at,
-        user: message.user_id_from,
-      })
-    })
+    const allFriends = UserStore.getUsers()
+    const friendlist = allFriends || []
+    console.log('userList.js:friendlist')
+    console.log(friendlist)
+
+    const currentUser = UserStore.getCurrentUser()
+    console.log('userList.js:currentUser')
+    console.log(currentUser)
 
     return {
-      openChatUserID: MessagesStore.getOpenChatUserID(),
       messageList: messageList,
-      friendlist: UserStore.getUsers(),
+      friendlist: friendlist,
+      currentUser: currentUser,
     }
   }
   componentWillMount() {
-    MessagesStore.onChange(this.onStoreChange.bind(this))
+    console.log('userList.js:componentWillMount()')
+    UserStore.onChange(this.onStoreChange.bind(this))
   }
   componentWillUnmount() {
-    MessagesStore.offChange(this.onStoreChange.bind(this))
+    console.log('userList.js:componentWillUnmount()')
+    UserStore.offChange(this.onStoreChange.bind(this))
   }
   onStoreChange() {
+    console.log('userList.js:onStoreChange()')
     this.setState(this.getStateFromStore())
   }
   changeOpenChat(id) {
-    MessagesAction.changeOpenChat(id)
+    console.log('userList.js:changeOpenChat(id)')
+    UsersAction.changeOpenChat(id)
   }
   render() {
+    // const openChatUserID = this.props.openChatUserID
     // this.state.messageList.sort((a, b) => {
     //   if (a.lastMessage.timestamp > b.lastMessage.timestamp) {
     //     return -1
@@ -62,18 +71,19 @@ class UserList extends React.Component {
     //   }
     //   return 0
     // })
-    this.state.messageList.sort((a, b) => {
-      if (a.lastMessage.updated_at > b.lastMessage.updated_at) {
+    this.state.friendlist.sort((a, b) => {
+      if (a.updated_at > b.updated_at) {
         return -1
       }
-      if (a.lastMessage.updated_at < b.lastMessage.updated_at) {
+      if (a.updated_at < b.updated_at) {
         return 1
       }
       return 0
     })
 
-    const friendlist = this.state.friendlist.map((friend, index) => {
-      const date = Utils.getNiceDate(friend.lastMessageDate)
+    const myFriendlist = _.map(this.state.friendlist, (friend) => {
+      // const date = Utils.getNiceDate(friend.created_at)
+      const date = 0
 
       // var statusIcon
       // if (message.lastMessage.from !== message.user.id) {
@@ -107,21 +117,21 @@ class UserList extends React.Component {
         'user-list__item': true,
         'clear': true,
         'user-list__item--new': isNewMessage,
-        'user-list__item--active': this.state.openChatUserID === friend.user_id,
+        'user-list__item--active': this.props.openChatUserID === friend.id,
       })
 
       return (
         <li
-          onClick={ this.changeOpenChat.bind(this, friend.user_id)}
+          onClick={ this.changeOpenChat.bind(this, friend.id)}
           className={ itemClasses }
           key={ friend.id }
         >
           <div className='user-list__item__picture'>
-            <img src={ friend.profilePicture } />
+
           </div>
           <div className='user-list__item__details'>
             <h4 className='user-list__item__name'>
-              { friend.user_name }
+              { friend.name }
               <abbr className='user-list__item__timestamp'>
                 { date }
               </abbr>
@@ -133,11 +143,13 @@ class UserList extends React.Component {
     return (
       <div className='user-list'>
         <ul className='user-list__list'>
-          { friendlist }
+          { myFriendlist }
         </ul>
       </div>
     )
   }
 }
-
+UserList.propTypes = {
+  openChatUserID: React.PropTypes.String,
+}
 export default UserList

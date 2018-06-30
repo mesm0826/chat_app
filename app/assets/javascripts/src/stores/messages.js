@@ -71,7 +71,6 @@ import { ActionTypes } from '../constants/app'
 
 // 上記messagesの0番目の値(chat_id)を１０進数でint変換し取得する
 // var openChatID = parseInt(Object.keys('messages')[0], 10)
-var openChatID = 1
 
 class ChatStore extends BaseStore {
   addChangeListener(callback) {
@@ -80,10 +79,6 @@ class ChatStore extends BaseStore {
 
   removeChangeListener(callback) {
     this.off('change', callback)
-  }
-  // ChatIDを返す
-  getOpenChatUserID() {
-    return openChatID
   }
   // 引数(chat_id)のメッセージを返す
   // getChatByUserID(id) {
@@ -108,11 +103,6 @@ MessagesStore.dispachToken = Dispatcher.register(payload => {
   const action = payload.action
 
   switch (action.type) {
-    case ActionTypes.UPDATE_OPEN_CHAT_ID:
-      openChatID = action.userID
-      // messages[openChatID].lastAccess.currentUser = +new Date()
-      MessagesStore.emitChange()
-      break
 
     // case ActionTypes.SEND_MESSAGE:
     //   const userID = action.userID

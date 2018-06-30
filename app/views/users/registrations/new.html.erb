@@ -1,0 +1,31 @@
+<div class="signin_wrapper">
+  <div class="form_wrapper">
+    <h2 class="title">Chatを始めよう</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
+
+      <div class="field">
+        <%= f.text_field :name, class: "input_field", autofocus: true, placeholder: "ユーザー名" %>
+      </div>
+
+      <div class="field">
+        <%= f.email_field :email, class: "input_field", autofocus: true, placeholder: "メールアドレス", autocomplete: "email" %>
+      </div>
+
+      <div class="field">
+        <%= f.password_field :password, class: "input_field", placeholder: "パスワード", autocomplete: "off" %>
+      </div>
+
+      <div class="field">
+        <%= f.password_field :password_confirmation, class: "input_field", placeholder: "パスワード確認", autocomplete: "off" %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit "新規登録", class: "btn btn-info login_btn" %>
+      </div>
+    <% end %>
+  <%= render "users/shared/links" %>
+  </div>
+  <%= image_tag("registrations_view.png", class: "login_pct")%>
+</div>
