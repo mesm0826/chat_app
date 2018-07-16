@@ -1,117 +1,73 @@
 import React from 'react'
 import classNames from 'classnames'
-// import Utils from '../../utils'
 import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
-// import MessagesAction from '../../actions/messages'
+import MessagesAction from '../../actions/messages'
 import UsersAction from '../../actions/users'
+import { RootEndpoints } from '../../constants/app'
 import _ from 'lodash'
 
 class UserList extends React.Component {
 
+  static get propTypes() {
+    return {
+      currentUser: React.PropTypes.object,
+      openChatUserID: React.PropTypes.number,
+    }
+  }
+
   constructor(props) {
     super(props)
-    console.log('UserList.js:props')
-    console.log(props)
     this.state = this.initialState
   }
 
   get initialState() {
-    console.log('userList.js:initialState()')
-    UsersAction.getUsers()
     return this.getStateFromStore()
   }
 
   getStateFromStore() {
-    // const allMessages = MessagesStore.getAllChats()
+    // メッセージを取得
     const allMessages = MessagesStore.getMessages()
     const messageList = allMessages || []
-    console.log('userList.js:messageList')
-    console.log(messageList)
-
-    const allFriends = UserStore.getUsers()
+    // 友達リストを取得
+    const allFriends = UserStore.getFriendList()
     const friendlist = allFriends || []
-    console.log('userList.js:friendlist')
-    console.log(friendlist)
-
-    const currentUser = UserStore.getCurrentUser()
-    console.log('userList.js:currentUser')
-    console.log(currentUser)
 
     return {
       messageList: messageList,
       friendlist: friendlist,
-      currentUser: currentUser,
+      editPath: RootEndpoints.EDIT_USER,
     }
   }
+
   componentWillMount() {
-    console.log('userList.js:componentWillMount()')
     UserStore.onChange(this.onStoreChange.bind(this))
   }
+
   componentWillUnmount() {
-    console.log('userList.js:componentWillUnmount()')
     UserStore.offChange(this.onStoreChange.bind(this))
   }
+
   onStoreChange() {
-    console.log('userList.js:onStoreChange()')
     this.setState(this.getStateFromStore())
   }
+  // ユーザー選択時
   changeOpenChat(id) {
-    console.log('userList.js:changeOpenChat(id)')
-    UsersAction.changeOpenChat(id)
+    // chatユーザー(相手)IDを取得
+    MessagesAction.changeOpenChat(id)
+    // メッセージを取得
+    MessagesAction.getMessages(id)
+  }
+  // ✖ボタン押下時
+  deleteFriendship(id) {
+    const result = confirm('本当に削除しますか？(チャットの履歴は残ります。)')
+    if (result) {
+      UsersAction.deleteFriendship(id)
+    }
   }
   render() {
-    // const openChatUserID = this.props.openChatUserID
-    // this.state.messageList.sort((a, b) => {
-    //   if (a.lastMessage.timestamp > b.lastMessage.timestamp) {
-    //     return -1
-    //   }
-    //   if (a.lastMessage.timestamp < b.lastMessage.timestamp) {
-    //     return 1
-    //   }
-    //   return 0
-    // })
-    this.state.friendlist.sort((a, b) => {
-      if (a.updated_at > b.updated_at) {
-        return -1
-      }
-      if (a.updated_at < b.updated_at) {
-        return 1
-      }
-      return 0
-    })
-
     const myFriendlist = _.map(this.state.friendlist, (friend) => {
-      // const date = Utils.getNiceDate(friend.created_at)
-      const date = 0
-
-      // var statusIcon
-      // if (message.lastMessage.from !== message.user.id) {
-      //   statusIcon = (
-      //     <i className='fa fa-reply user-list__item__icon' />
-      //   )
-      // }
-      // if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
-      //   statusIcon = (
-      //     <i className='fa fa-circle user-list__item__icon' />
-      //   )
-      // }
-      // var statusIcon
-      // if (friend.lastMessage.user_id_from !== friend.user_id_from) {
-      //   statusIcon = (
-      //     <i className='fa fa-reply user-list__item__icon' />
-      //   )
-      // }
-      // if (friend.lastAccess.updated_at < friend.lastMessage.updated_at) {
-      //   statusIcon = (
-      //     <i className='fa fa-circle user-list__item__icon' />
-      //   )
-      // }
-
       var isNewMessage = false
-      // if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
-      //   isNewMessage = message.lastMessage.from !== UserStore.user.id
-      // }
 
       const itemClasses = classNames({
         'user-list__item': true,
@@ -120,6 +76,8 @@ class UserList extends React.Component {
         'user-list__item--active': this.props.openChatUserID === friend.id,
       })
 
+      const edit_url = this.state.editPath + friend.id
+
       return (
         <li
           onClick={ this.changeOpenChat.bind(this, friend.id)}
@@ -127,15 +85,15 @@ class UserList extends React.Component {
           key={ friend.id }
         >
           <div className='user-list__item__picture'>
-
+            <img src={friend.image_name.url}/>
           </div>
+          <span
+           onClick={ this.deleteFriendship.bind(this, friend.id)}
+           className='fa fa-times-circle'></span>
           <div className='user-list__item__details'>
-            <h4 className='user-list__item__name'>
+            <a href={edit_url} className='friend_name'>
               { friend.name }
-              <abbr className='user-list__item__timestamp'>
-                { date }
-              </abbr>
-            </h4>
+            </a>
           </div>
         </li>
       )
@@ -148,8 +106,5 @@ class UserList extends React.Component {
       </div>
     )
   }
-}
-UserList.propTypes = {
-  openChatUserID: React.PropTypes.String,
 }
 export default UserList

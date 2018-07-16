@@ -1,6 +1,6 @@
-<div class="signin_wrapper">
+<div class="signup_wrapper">
   <div class="form_wrapper">
-    <h2 class="title">Chatを始めよう</h2>
+    <h2 class="title_signup">Chatを始めよう</h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= devise_error_messages! %>
@@ -21,7 +21,7 @@
         <%= f.password_field :password_confirmation, class: "input_field", placeholder: "パスワード確認", autocomplete: "off" %>
       </div>
 
-      <div class="actions">
+      <div class="field actions">
         <%= f.submit "新規登録", class: "btn btn-info login_btn" %>
       </div>
     <% end %>

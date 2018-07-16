@@ -1,37 +1,35 @@
 import React from 'react'
-import classNames from 'classnames'
+import UsersAction from '../../actions/users'
 import _ from 'lodash'
 
 class SearchResultList extends React.Component {
 
+  // 友達リストに登録
+  saveFriendship(e) {
+    const targetUserName = e.currentTarget.textContent
+    UsersAction.saveFriendship(targetUserName)
+  }
+
   render() {
     const searchUserList = this.props.searchUserList
-    console.log('SearchResultList.js:searchUserList')
-    console.log(searchUserList)
     const searchResultList = _.map(searchUserList, (searchResult) => {
-      const itemClasses = classNames({
-        'user-list__item': true,
-        'clear': true,
-      })
-
       return (
-        <li 
-          className={ itemClasses }
+        <li
+          className='search_user_list'
+          onClick={ this.saveFriendship.bind(this) }
         >
-          <div className='user-list__item__picture'>
-
-          </div>
-          <div className='user-list__item__details'>
-            <h4 className='user-list__item__name'>
+          <div className='search_user_list_item'>
+            <div className='search_user_list_details'>
+              <img className='search_user_list_image' src={searchResult.image_name.url}/>
               { searchResult.name }
-            </h4>
+            </div>
           </div>
         </li>
       )
     }, this)
     return (
       <div className='search_result'>
-        <ul>
+        <ul className='search_result_ul'>
           { searchResultList }
         </ul>
       </div>

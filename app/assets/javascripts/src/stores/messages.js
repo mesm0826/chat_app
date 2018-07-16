@@ -1,76 +1,6 @@
 import Dispatcher from '../dispatcher'
 import BaseStore from '../base/store'
-// import UserStore from '../stores/user'
 import { ActionTypes } from '../constants/app'
-
-// const messages = {
-//   2: {
-//     user: {
-//       profilePicture: 'https://avatars0.githubusercontent.com/u/7922109?v=3&s=460',
-//       id: 2,
-//       name: 'Ryan Clark',
-//       status: 'online',
-//     },
-//     lastAccess: {
-//       recipient: 1424469794050,
-//       currentUser: 1424469794080,
-//     },
-//     messages: [
-//       {
-//         contents: 'Hey!',
-//         from: 2,
-//         timestamp: 1424469793023,
-//       },
-//       {
-//         contents: 'Hey, what\'s up?',
-//         from: 1,
-//         timestamp: 1424469794000,
-//       },
-//     ],
-//   },
-//   3: {
-//     user: {
-//       read: true,
-//       profilePicture: 'https://avatars3.githubusercontent.com/u/2955483?v=3&s=460',
-//       name: 'Jilles Soeters',
-//       id: 3,
-//       status: 'online',
-//     },
-//     lastAccess: {
-//       recipient: 1424352522000,
-//       currentUser: 1424352522080,
-//     },
-//     messages: [
-//       {
-//         contents: 'What a game of ping pong?',
-//         from: 3,
-//         timestamp: 1424352522000,
-//       },
-//     ],
-//   },
-//   4: {
-//     user: {
-//       name: 'Todd Motto',
-//       id: 4,
-//       profilePicture: 'https://avatars1.githubusercontent.com/u/1655968?v=3&s=460',
-//       status: 'online',
-//     },
-//     lastAccess: {
-//       recipient: 1424423579000,
-//       currentUser: 1424423574000,
-//     },
-//     messages: [
-//       {
-//         contents: 'Please follow me on twitter I\'ll pay you',
-//         timestamp: 1424423579000,
-//         from: 4,
-//       },
-//     ],
-//   },
-// }
-
-// 上記messagesの0番目の値(chat_id)を１０進数でint変換し取得する
-// var openChatID = parseInt(Object.keys('messages')[0], 10)
 
 class ChatStore extends BaseStore {
   addChangeListener(callback) {
@@ -80,16 +10,7 @@ class ChatStore extends BaseStore {
   removeChangeListener(callback) {
     this.off('change', callback)
   }
-  // 引数(chat_id)のメッセージを返す
-  // getChatByUserID(id) {
-  //   return messages[id]
-  // }
-  // 全てのメッセージを返す
-  // getAllChats() {
-  //   return messages
-  // }
 
-  // setter,getter
   getMessages() {
     if (!this.get('messages')) this.setMessage([])
     return this.get('messages')
@@ -101,19 +22,11 @@ class ChatStore extends BaseStore {
 const MessagesStore = new ChatStore()
 MessagesStore.dispachToken = Dispatcher.register(payload => {
   const action = payload.action
+  var messages
+  var length
+  var id
 
   switch (action.type) {
-
-    // case ActionTypes.SEND_MESSAGE:
-    //   const userID = action.userID
-    //   messages[userID].messages.push({
-    //     contents: action.message,
-    //     timestamp: action.timestamp,
-    //     from: UserStore.user.id,
-    //   })
-    //   messages[userID].lastAccess.currentUser = +new Date()
-    //   MessagesStore.emitChange()
-    //   break
 
     case ActionTypes.GET_MESSAGES:
       MessagesStore.setMessage(action.json.messages)
@@ -121,9 +34,39 @@ MessagesStore.dispachToken = Dispatcher.register(payload => {
       break
 
     case ActionTypes.SAVE_MESSAGE:
-      const messages = MessagesStore.getMessages()
+      messages = MessagesStore.getMessages()
+      length = messages.length
+      id = 1
+      if (length > 0) {
+        id = messages[length - 1].id + 1
+      }
+
       messages.push(
-        action.json.message
+        {
+          id: id,
+          content: action.json.content,
+          from_user_id: action.json.from_user_id,
+          to_user_id: action.json.to_user_id,
+          picture: '',
+        }
+      )
+      MessagesStore.emitChange()
+      break
+    case ActionTypes.SAVE_IMAGE:
+      messages = MessagesStore.getMessages()
+      length = messages.length
+      id = 1
+      if (length > 0) {
+        id = messages[length - 1].id + 1
+      }
+
+      messages.push(
+        {
+          id: id,
+          picture: action.json.picture,
+          from_user_id: action.json.from_user_id,
+          to_user_id: action.json.to_user_id,
+        }
       )
       MessagesStore.emitChange()
       break

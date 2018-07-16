@@ -1,8 +1,9 @@
 <div class="login_wrapper">
   <div class="form_wrapper">
-    <h2 class="title">Chatにログイン</h2>
+    <h2 class="title_login">Chatにログイン</h2>
 
     <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
       <div class="field">
         <%= f.email_field :email, class: "input_field", autofocus: true, placeholder: "メールアドレス", autocomplete: "email" %>
       </div>
@@ -18,7 +19,7 @@
         </div>
       <% end -%>
 
-      <div class="actions">
+      <div class="field actions">
         <%= f.submit "ログイン", class: "btn btn-info login_btn"%>
       </div>
     <% end %>

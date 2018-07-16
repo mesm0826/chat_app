@@ -1,15 +1,29 @@
 class Api::MessagesController < ApplicationController
   def index
-    @messages = Message.all
+    openChatUserID = params[:openChatUserID]
+    my_message_ids = 
+        "SELECT id FROM messages WHERE from_user_id = :openChatUserID AND to_user_id = :current_user_id"
+    your_message_ids = 
+        "SELECT id FROM messages WHERE from_user_id = :current_user_id AND to_user_id = :openChatUserID"
+    @messages = Message.where("id IN (#{my_message_ids}) OR id IN (#{your_message_ids})",
+                              current_user_id: current_user.id, openChatUserID: openChatUserID)
     render json: {
       messages: @messages,
     }
   end
   def create
     content = params[:message]
-    user_id_to = params[:user_id_to]
-    user_id_from = current_user.id
-    Message.create(content: content, user_id_from: user_id_from, user_id_to: user_id_to)
-    redirect_to root_path
+    to_user_id = params[:to_user_id]
+    from_user_id = current_user.id
+    message = Message.create(content: content, from_user_id: from_user_id, to_user_id: to_user_id)
+    render json: message
   end
+  def save_image
+    image = params[:image]
+    to_user_id = params[:to_user_id]
+    from_user_id = current_user.id
+    message = Message.create(from_user_id: from_user_id, to_user_id: to_user_id, picture: image)
+    render json: message
+  end
+
 end

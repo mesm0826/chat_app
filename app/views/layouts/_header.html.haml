@@ -1,21 +1,21 @@
 %header
-  %div.container
-    =link_to 'Chat App', root_path, id:'logo'
-    %ul.nav
-      %ul.nav.navbar-nav.navbar-right
+  %div.header_wrapper
+    %div.header_left
+      =link_to 'Chat App', root_path, id:'logo'
+    %div.header_right
+      %ul.nav.nav-tabs
         %li.search_btn
-        =link_to 'ユーザーを探す', users_search_path, class:'header_search'
+          =link_to 'ユーザーを探す', users_search_path, class:'header_search'
         -if user_signed_in?
           %li.dropdown
-          %a( href='#' class='dropdown-toggle' data-toggle='dropdown')Account
-          %b.caret
-          %ul.dropdown-menu
-            %li
-            =link_to 'マイページ', user_path(current_user), class:'header_mypage'
-            %li
-            =link_to 'ログアウト', destroy_user_session_path, class:'header_logout' ,:method => :delete
+            %a( href='#' class='dropdown-toggle' data-toggle='dropdown')
+              #{@current_user.name} 
+              %i.fa.fa-caret-down
+            %ul.dropdown-menu
+              %li
+                =link_to 'マイページ', user_path(current_user), class:'header_mypage'
+              %li
+                =link_to 'ログアウト', destroy_user_session_path, class:'header_logout' ,:method => :delete
         -else
           %li
-          =link_to 'ログイン', new_user_session_path
-%p.notice= notice
-%p.alert= alert
+            =link_to 'ログイン', new_user_session_path

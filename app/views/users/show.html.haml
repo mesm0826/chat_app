@@ -1,9 +1,11 @@
 =render 'layouts/header'
 %div.show_wrapper
+  %div.show_image
+    = image_tag @user.image_name.url, class:'user_image'
   %div.show_name
     = @user.name
   %div.show_email
     = @user.email
-  %div.edit_btn
-    =link_to 'プロフィール編集', edit_user_registration_path, class:'btn btn-info'
-
+  -if @user.id == current_user.id
+    %div.edit_btn
+      =link_to 'プロフィール編集', edit_user_registration_path, class:'btn btn-info'

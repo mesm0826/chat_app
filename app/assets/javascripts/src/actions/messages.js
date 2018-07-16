@@ -4,23 +4,21 @@ import {ActionTypes, APIEndpoints, CSRFToken} from '../constants/app'
 
 export default {
 
-  // sendMessage(userID, message) {
-  //   Dispatcher.handleViewAction({
-  //     type: ActionTypes.SEND_MESSAGE,
-  //     userID: userID,
-  //     message: message,
-  //     timestamp: +new Date(),
-  //   })
-  // },
-  getMessages() {
+  // chatユーザー(相手)を変更
+  changeOpenChat(newUserID) {
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_OPEN_CHAT_ID,
+      userID: newUserID,
+    })
+  },
+  // chatユーザー(相手)とのメッセージを取得
+  getMessages(openChatUserID) {
     return new Promise((resolve, reject) => {
-      console.log('promiseMessages')
       request
-      .get('/api/messages')
+      .get(`${APIEndpoints.MESSAGES}`)
+      .query({ openChatUserID: openChatUserID })
       .end((error, res) => {
         if (!error && res.status === 200) {
-          console.log('res.text')
-          console.log(res.text)
           const json = JSON.parse(res.text)
           Dispatcher.handleServerAction({
             type: ActionTypes.GET_MESSAGES,
@@ -33,21 +31,44 @@ export default {
       })
     })
   },
-  saveMessage(message, user_id_to) {
+  // chatユーザー(相手)とのメッセージをDBに登録
+  saveMessage(message, to_user_id) {
     return new Promise((resolve, reject) => {
       request
       .post(`${APIEndpoints.MESSAGES}`)
       .set('X-CSRF-Token', CSRFToken())
+      .set('Content-Type', 'application/json')
       .send({ message: message,
-              user_id_to: user_id_to,
+              to_user_id: to_user_id,
       })
       .end((error, res) => {
         if (!error && res.status === 200) {
-          console.log('res.text')
-          console.log(res.text)
           const json = JSON.parse(res.text)
           Dispatcher.handleServerAction({
             type: ActionTypes.SAVE_MESSAGE,
+            json,
+          })
+        } else {
+          reject(res)
+        }
+      })
+    })
+  },
+  // chatユーザー(相手)との画像をDBに登録
+  saveImage(file, to_user_id) {
+    return new Promise((resolve, reject) => {
+      request
+      .post(`${APIEndpoints.MESSAGES}/save_image`)
+      .set('X-CSRF-Token', CSRFToken())
+      .field('to_user_id', to_user_id)
+      .attach('image', file, file.name)
+      .end((error, res) => {
+        if (!error && res.status === 200) {
+          const json = JSON.parse(res.text)
+          Dispatcher.handleServerAction({
+            type: ActionTypes.SAVE_IMAGE,
+            image: file.name,
+            to_user_id,
             json,
           })
         } else {

@@ -1,34 +1,29 @@
 import React from 'react'
-// import MessagesStore from '../../stores/messages'
 import MessagesAction from '../../actions/messages'
-import UserStore from '../../stores/user'
 
 class ReplyBox extends React.Component {
 
+  static get propTypes() {
+    return {
+      openChatUserID: React.PropTypes.number,
+    }
+  }
+
   constructor(props) {
     super(props)
-    console.log('ReplyBox.js:props')
-    console.log(props)
     this.state = this.initialState
   }
-  // 初期状態はブランク
+
   get initialState() {
-    console.log('ReplyBox.js:initialState()')
     return {
       value: '',
     }
   }
   // EnterKey押下
   handleKeyDown(e) {
-    console.log('ReplyBox.js:handleKeyDown(e)')
     if (e.keyCode === 13) {
-      // MessagesAction.sendMessage(MessagesStore.getOpenChatUserID(), this.state.value)
-      const user_id_to = UserStore.getChatUserID()
-      console.log('user_id_to')
-      console.log(user_id_to)
-      console.log('this.state.value')
-      console.log(this.state.value)
-      MessagesAction.saveMessage(this.state.value, user_id_to)
+      const to_user_id = this.props.openChatUserID
+      MessagesAction.saveMessage(this.state.value, to_user_id)
       this.setState({
         value: '',
       })
@@ -36,12 +31,18 @@ class ReplyBox extends React.Component {
   }
   // 状態を更新する
   updateValue(e) {
-    console.log('ReplyBox.js:updateValue(e)')
-    console.log('e.target.value')
-    console.log(e.target.value)
     this.setState({
       value: e.target.value,
     })
+  }
+  // 画像選択時
+  selectImage(e) {
+    if (e.target.files.length > 0) {
+      const file = e.target.files[0]
+      const to_user_id = this.props.openChatUserID
+      // 画像を登録
+      MessagesAction.saveImage(file, to_user_id)
+    }
   }
 
   render() {
@@ -57,6 +58,10 @@ class ReplyBox extends React.Component {
         <span className='reply-box__tip'>
           Press <span className='reply-box__tip__button'>Enter</span> to send
         </span>
+        <input
+          type='file'
+          onChange={ this.selectImage.bind(this) }
+          className='reply-box__input_image'/>
       </div>
     )
   }
