@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classNames'
+import ClassNames from 'classnames'
 import MessagesStore from '../../stores/messages'
 import ReplyBox from '../../components/messages/replyBox'
 import UserStore from '../../stores/user'
@@ -24,14 +24,14 @@ class MessagesBox extends React.Component {
   }
 
   getStateFromStore() {
-    // メッセージを取得
+    // メッセージ取得
     const allMessages = MessagesStore.getMessages()
     var messages = allMessages || []
-    // メッセージを作成日でソート
+    // メッセージを作成日でソートする
     messages = _.sortBy(messages, (message) => { return message.created_at })
-    // ログインユーザーの情報を取得
+    // ログイン情報取得
     const currentUser = UserStore.getCurrentUser()
-    // chatユーザー(相手)IDを取得
+    // 相手のIDを取得
     const openChatUserID = this.props.openChatUserID
     return {
       messages: messages,
@@ -54,7 +54,7 @@ class MessagesBox extends React.Component {
 
   render() {
     const messages = _.map(this.state.messages, (message) => {
-      const messageClasses = classNames({
+      const messageClasses = ClassNames({
         'message-box__item': true,
         'message-box__item--from-current': message.from_user_id === this.state.currentUser.id,
         'clear': true,

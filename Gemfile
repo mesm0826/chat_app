@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.8'
 gem 'sqlite3'
 gem 'haml-rails'
 gem 'erb2haml'
@@ -16,8 +16,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 gem 'bootstrap-sass',       '3.2.0.0'
-gem 'carrierwave',             '0.10.0'
-gem 'mini_magick',             '3.8.0'
+gem 'carrierwave'
+gem 'mini_magick'
 gem 'fog',                     '1.36.0'
 
 group :development, :test do
@@ -32,4 +32,3 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
-

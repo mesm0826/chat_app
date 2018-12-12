@@ -1,5 +1,5 @@
 import React from 'react'
-import classNames from 'classnames'
+import ClassNames from 'classnames'
 import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
 import MessagesAction from '../../actions/messages'
@@ -26,10 +26,10 @@ class UserList extends React.Component {
   }
 
   getStateFromStore() {
-    // メッセージを取得
+    // メッセージ取得
     const allMessages = MessagesStore.getMessages()
     const messageList = allMessages || []
-    // 友達リストを取得
+    // 友達リスト取得
     const allFriends = UserStore.getFriendList()
     const friendlist = allFriends || []
 
@@ -51,16 +51,16 @@ class UserList extends React.Component {
   onStoreChange() {
     this.setState(this.getStateFromStore())
   }
-  // ユーザー選択時
+  // ユーザー選択
   changeOpenChat(id) {
-    // chatユーザー(相手)IDを取得
+    // 相手のIDを取得
     MessagesAction.changeOpenChat(id)
-    // メッセージを取得
+    // メッセージ取得
     MessagesAction.getMessages(id)
   }
-  // ✖ボタン押下時
+  // 閉じるボタン
   deleteFriendship(id) {
-    const result = confirm('本当に削除しますか？(チャットの履歴は残ります。)')
+    const result = confirm('このユーザーをリストから削除しますか？(チャットの履歴は残ります。)')
     if (result) {
       UsersAction.deleteFriendship(id)
     }
@@ -69,7 +69,7 @@ class UserList extends React.Component {
     const myFriendlist = _.map(this.state.friendlist, (friend) => {
       var isNewMessage = false
 
-      const itemClasses = classNames({
+      const itemClasses = ClassNames({
         'user-list__item': true,
         'clear': true,
         'user-list__item--new': isNewMessage,

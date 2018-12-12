@@ -16,9 +16,9 @@ class App extends React.Component {
   }
 
   getStateFromStore() {
-    // ログインユーザーの情報を取得
+    // ログイン情報を取得
     const currentUser = UserStore.getCurrentUser()
-    // chatユーザー(相手)IDを取得
+    // 相手のIDを取得
     const openChatUserID = UserStore.getChatUserID()
     MessagesAction.getMessages(openChatUserID)
     return {

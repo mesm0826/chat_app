@@ -2,7 +2,7 @@ import request from 'superagent'
 import Dispatcher from '../dispatcher'
 import {ActionTypes, APIEndpoints, CSRFToken, RootEndpoints} from '../constants/app'
 export default {
-  // ログインユーザーの友達リストを取得
+  // 友達リストを取得
   getFriendList() {
     return new Promise((resolve, reject) => {
       request
@@ -21,7 +21,7 @@ export default {
       })
     })
   },
-  // ログインユーザー情報を取得
+  // ログイン情報を取得
   getCurrentUser() {
     return new Promise((resolve, reject) => {
       request
@@ -40,7 +40,7 @@ export default {
       })
     })
   },
-  // 検索文字列を含むユーザーを検索
+  // ユーザーを検索
   getSearchUsers(search_string) {
     return new Promise((resolve, reject) => {
       request
@@ -60,7 +60,7 @@ export default {
       })
     })
   },
-  // 友達関係をDBに登録
+  // 友達関係登録
   saveFriendship(targetUserName) {
     return new Promise((resolve, reject) => {
       request
@@ -77,7 +77,7 @@ export default {
       })
     })
   },
-  // 友達関係をDBから削除
+  // 友達関係の削除
   deleteFriendship(targetUserId) {
     return new Promise((resolve, reject) => {
       request

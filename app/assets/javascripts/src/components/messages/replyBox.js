@@ -19,9 +19,9 @@ class ReplyBox extends React.Component {
       value: '',
     }
   }
-  // EnterKey押下
+  // Enter単押しで更新されるのを防止
   handleKeyDown(e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && this.state.value !== '') {
       const to_user_id = this.props.openChatUserID
       MessagesAction.saveMessage(this.state.value, to_user_id)
       this.setState({
@@ -29,7 +29,7 @@ class ReplyBox extends React.Component {
       })
     }
   }
-  // 状態を更新する
+  // 更新
   updateValue(e) {
     this.setState({
       value: e.target.value,

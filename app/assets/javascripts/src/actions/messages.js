@@ -3,15 +3,14 @@ import Dispatcher from '../dispatcher'
 import {ActionTypes, APIEndpoints, CSRFToken} from '../constants/app'
 
 export default {
-
-  // chatユーザー(相手)を変更
+  // 相手変更
   changeOpenChat(newUserID) {
     Dispatcher.handleViewAction({
       type: ActionTypes.UPDATE_OPEN_CHAT_ID,
       userID: newUserID,
     })
   },
-  // chatユーザー(相手)とのメッセージを取得
+  // メッセージを取得
   getMessages(openChatUserID) {
     return new Promise((resolve, reject) => {
       request
@@ -31,7 +30,7 @@ export default {
       })
     })
   },
-  // chatユーザー(相手)とのメッセージをDBに登録
+  // メッセージをDBに登録
   saveMessage(message, to_user_id) {
     return new Promise((resolve, reject) => {
       request
@@ -54,7 +53,7 @@ export default {
       })
     })
   },
-  // chatユーザー(相手)との画像をDBに登録
+  // 画像をDBに登録
   saveImage(file, to_user_id) {
     return new Promise((resolve, reject) => {
       request

@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 class SearchResultList extends React.Component {
 
-  // 友達リストに登録
+  // 友達関係の保存
   saveFriendship(e) {
     const targetUserName = e.currentTarget.textContent
     UsersAction.saveFriendship(targetUserName)

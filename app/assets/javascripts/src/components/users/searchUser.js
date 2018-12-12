@@ -14,7 +14,7 @@ class SearchUser extends React.Component {
     return this.getStateFromStore()
   }
   getStateFromStore() {
-    // 検索したユーザーリストを取得
+    // ユーザー検索結果の取得
     const searchUserList = UserStore.getSearchUsers()
     return {
       searchUserList: searchUserList,
@@ -34,7 +34,7 @@ class SearchUser extends React.Component {
 
   handleKeyDown(e) {
     const search_string = e.target.value
-    // 検索文字列を含むユーザーを検索
+    // 検索文字列を含むユーザーの検索
     UsersAction.getSearchUsers(search_string)
   }
 
